@@ -47,15 +47,24 @@
         ?>
         </head>
         <body>
-        <?php include_once("includes/inc-header.php"); ?>
+        <?php 
+            $title = "Catalog";    
+            include_once("includes/inc-header.php"); 
+        ?>
         <div class="container-fluid skip-nav">
             <div class="dashboard-block client-block">
                  <h3 style="padding-bottom: 20px; text-align:center;"><?php echo $client_name; ?> Catalog</h3>
                  <p>
+                 <select class="form-control-sm" id="quick-filters" style="float: right; margin: 10px;">
+                    <option value="choose_filter">Choose Filter</option>
+                    <option value="view_nonstock">View Non-Stock</option>
+                    <option value="view_stock">View Stock</option>
+                    <option value="view_all">View All</option>
+                </select>
                         <a href="https://admin.authenticmerch.com/dashboard.php" class="btn"> <i class="fas fa-undo"></i> Back To Dashboard</a> 
                         <a href="add_product.php?client_id=<?php echo $client_id; ?>" class="btn"><i class="fas fa-plus-circle"></i> Add a New PDS</a>
                     </p>
-            <table class="table">
+            <table class="table products">
                 <thead>
                     <th>Product Name</th>
                     <th>Vendor</th>
@@ -86,13 +95,13 @@
                         $product_ships_from      = $product_details['product_ships_from'];
                         $is_discontinued         = $product_details['is_discontinued'];
                 ?>
-                        <tr>
+                        <tr class="product_row <?php echo $product_stock_ownership; ?>">
                             <td><a href="edit_product.php?product_id=<?php echo $product_id; ?>" title="Edit Product Info"><?php echo $product_name; ?></a></td>
                             <td><?php echo $vendor; ?></td>
                             <td><?php echo $vendor_product_number; ?></td>
-                            <td><?php echo $pricing_cost_net; ?></td>
-                            <td><?php echo $pricing_corporate; ?></td>
-                            <td><?php echo $pricing_retail; ?></td>
+                            <td>$<?php echo $pricing_cost_net; ?></td>
+                            <td>$<?php echo $pricing_corporate; ?></td>
+                            <td>$<?php echo $pricing_retail; ?></td>
                             <td><?php echo $product_stock_ownership; ?></td>
                             <td><?php echo $product_ships_from; ?></td>
                             <td><?php echo ($is_discontinued == 1 ? "Yes" : "No"); ?></td>
@@ -105,6 +114,25 @@
             </div>
     </div>
         <?php include_once("includes/inc-footer.php"); ?>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#quick-filters").on("change",function(e){
+                    var valueSelected = this.value;
+
+                    if(valueSelected == "view_all"){
+                        $('.product_row').fadeIn(300);
+                    }
+                    else if(valueSelected == "view_nonstock"){
+                        $('.product_row').hide();
+                        $('.nonstock').fadeIn(300); 
+                    }
+                    else if(valueSelected == "view_stock"){
+                        $('.product_row').fadeIn(300);
+                        $('.nonstock').hide();
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
      
