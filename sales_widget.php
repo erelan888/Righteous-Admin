@@ -37,36 +37,12 @@
         $embroidery_stitch_count      = (empty($_POST['embroidery-stitch-count'])?0:$_POST['embroidery-stitch-count']);
         $heatpress                    = $_POST['heatpress'];
         $project_shipping             = (empty($_POST['project-shipping'])?0:$_POST['project-shipping']);
-        $markup_level                 = $_POST['markup-level'];
-        $all_in_sales_price_online    = $_POST['all-in-sales-price-online'];
-        $sell_price_online            = $_POST['sell-price-online'];
-        $decoration_charges_online    = $_POST['decoration-charges-online'];
-        $setup_run_charges_online     = $_POST['setup-run-charges-online'];
-        $design_services_online       = $_POST['design-services-online'];
-        $annual_store_charges_online  = $_POST['annual-store-charges-online'];
-        $warehousing_charges_online   = $_POST['warehousing-charges-online'];
-        $merchant_services_online     = $_POST['merchant-services-online'];
-        $internal_shipping_online     = $_POST['internal-shipping-online'];
-        $sell_price_total_online      = $_POST['sell-price-total-online'];
-        $all_in_sales_price_project   = $_POST['all-in-sales-price-project'];
-        $sell_price_project           = $_POST['sell-price-project'];
-        $decoration_charges_project   = $_POST['decoration-charges-project'];
-        $setup_run_charges_project    = $_POST['setup-run-charges-project'];
-        $design_services_project      = $_POST['design-services-project'];
-        $annual_store_charges_project = $_POST['annual-store-charges-project'];
-        $warehousing_charges_project  = $_POST['warehousing-charges-project'];
-        $merchant_services_project    = $_POST['merchant-services-project'];
-        $internal_shipping_project    = $_POST['internal-shipping-project'];
-        $sell_price_total_project     = $_POST['sell-price-total-project'];
+        $markup_level                 = $_POST['markup'];
 
         $insert_query = "INSERT INTO `admin_sales_widget` (client_id,user_id,estimated_volume,average_shipping_quantity,how_customer_pay,
         design_options,item_size,number_of_skus,purchase_quantity,sourced_item,purchase_price,inbound_freight,how_we_manufacture,what_happens,
         print_screens_front,print_screens_back,print_screens_other,print_screen_washes,print_screen_tape_off,embroidery_size,embroidery_stitch_count,
-        heatpress,project_shipping,markup_level,all_in_sales_price_online,sell_price_online,decoration_charges_online,setup_run_charges_online,
-        design_services_online,annual_store_charges_online,warehousing_charges_online,merchant_services_online,internal_shipping_online,
-        sell_price_total_online,all_in_sales_price_project,sell_price_project,decoration_charges_project,setup_run_charges_project,
-        design_services_project,annual_store_charges_project,warehousing_charges_project,merchant_services_project,internal_shipping_project,
-        sell_price_total_project) VALUES ('"
+        heatpress,project_shipping,markup_level) VALUES ('"
         . $client_id                    . "','"
         . $user_id                      . "','"
         . $estimated_volume             . "','"
@@ -90,27 +66,7 @@
         . $embroidery_stitch_count      . "','"
         . $heatpress                    . "','"
         . $project_shipping             . "','"
-        . $markup_level                 . "','"
-        . $all_in_sales_price_online    . "','"
-        . $sell_price_online            . "','"
-        . $decoration_charges_online    . "','"
-        . $setup_run_charges_online     . "','"
-        . $design_services_online       . "','"
-        . $annual_store_charges_online  . "','"
-        . $warehousing_charges_online   . "','"
-        . $merchant_services_online     . "','"
-        . $internal_shipping_online     . "','"
-        . $sell_price_total_online      . "','"
-        . $all_in_sales_price_project   . "','"
-        . $sell_price_project           . "','"
-        . $decoration_charges_project   . "','"
-        . $setup_run_charges_project    . "','"
-        . $design_services_project      . "','"
-        . $annual_store_charges_project . "','"
-        . $warehousing_charges_project  . "','"
-        . $merchant_services_project    . "','"
-        . $internal_shipping_project    . "','"
-        . $sell_price_total_project     . "');";
+        . $markup_level                 . "');";
 
         $message = "";
         if($conn->query($insert_query) === TRUE){
