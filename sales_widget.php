@@ -210,6 +210,8 @@
                         <option value="NON_STOCK_ONLINE">Non-stock Online</option>
                         <option value="PERIODIC_SCHEDULED_ONLINE">Periodic Scheduled Online</option>
                         <option value="RECEIVED_INTO_INVENTORY">Received into Inventory</option>
+                        <option value="DIRECT_FROM_RCA">(Project)Direct to Consumer from RCA</option>
+                        <option value="DIRECT_FROM_VENDOR">(Project)Direct Ship From Vendor</option>
                     </select></td>
                     </tr>
                     </table>
@@ -443,7 +445,9 @@ $(document).ready(function(){
         "LTO_SPECIAL": .04,
         "NON_STOCK_ONLINE": .05,
         "PERIODIC_SCHEDULED_ONLINE": .08,
-        "RECEIVED_INTO_INVENTORY": .20
+        "RECEIVED_INTO_INVENTORY": .20,
+        "DIRECT_FROM_RCA":0.02,
+        "DIRECT_FROM_VENDOR":0.01
     }
     var paymentMethodMarkups = {
         "credit-card": 0.05,
@@ -731,7 +735,8 @@ $(document).ready(function(){
         let decoChargesCalc = calculateDecoCharges();
         
         if(estimatedAnnual != ""){
-            return ((salePriceCalc + decoChargesCalc) * (orderPurposeMarkup[$('.what-happens').val()]) * (stockSizeType[itemSize]));
+            /* (sale price + deco charges) * 0.02 if shipping from here or 0.01 if shipping from vendor */
+            return ((salePriceCalc + decoChargesCalc) * (orderPurposeMarkup[$('.what-happens').val()]) );
         }
     }
     function calculateRunCharges(){
@@ -777,6 +782,11 @@ $(document).ready(function(){
         + calculateDecoCharges() + calculateInternalShipping() + calculateMerchantServices()
         + calculateStoreCharges() + calculateWarehouseCharges() + calculateRunCharges();
     }
+    function sumAllProjectCharges(){
+        return calculateSalePriceForItem() + calculateDesignServices() 
+        + calculateDecoCharges() + calculateMerchantServices()
+        + calculateProjectWarehouseCharges() + calculateProjectRunCharges() + calculateInternalShipping();
+    }
     function getProjectShipping(){
         return (checkValue($(".project-shipping").val()));
     }
@@ -796,13 +806,13 @@ $(document).ready(function(){
     $("#sell-price-online").text(formatter.format(calculateSalePriceForItem()));
     $("#design-services-project").text(formatter.format(calculateDesignServices())); //same as online
     $("#decoration-charges-project").text(formatter.format(calculateDecoCharges()));
-    $("#internal-shipping-project").text(formatter.format(0.00));
+    $("#internal-shipping-project").text(formatter.format(calculateInternalShipping())); //no internal shipping charges
     $("#merchant-services-project").text(formatter.format(calculateMerchantServices()));
     $("#annual-store-charges-project").text(formatter.format(0.00)); //No Online Store Charges
     $("#warehousing-charges-project").text(formatter.format(calculateProjectWarehouseCharges()));
     $("#setup-run-charges-project").text(formatter.format(calculateProjectRunCharges()));
-    $("#sale-price-total-project").text(formatter.format(sumAllCharges()));
-    $(".all-in-sales-price-project").text(formatter.format(sumAllCharges()/estimatedAnnual));
+    $("#sale-price-total-project").text(formatter.format(sumAllProjectCharges()));
+    $(".all-in-sales-price-project").text(formatter.format(sumAllProjectCharges()/estimatedAnnual));
 
     $("#total-per-item-charge-project").text(formatter.format(calculateSalePriceForItem()/estimatedAnnual));
     $("#total-project-charges").text(formatter.format(calculateProjectRunCharges() + calculateDesignServices() + (0.00 +
