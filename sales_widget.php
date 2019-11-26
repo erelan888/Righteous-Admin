@@ -1,6 +1,11 @@
 <?php
     ob_start();
     session_start();
+
+    define("API_TOKEN","057b7128760efe57302835217de648ddc62923d1");
+    define("COMPANY_DOMAIN","righteous");
+    define("COMPANIES_PER_PAGE",100);
+    define("PHP_EOL_FIX", "\n<br>");
     
     $user_id = $_SESSION["user_id"];
     $username = $_SESSION['username'];
@@ -12,7 +17,34 @@
     //error_reporting( E_ALL );
     //ini_set( "display_errors", 1 );
     include_once("includes/inc-dbc-conn.php");
-    
+    function create_file($data){
+        //TODO: create file and store it on server, so it can then be pushed to pipedrive. 
+
+    }
+    function push_to_pipedrive($filename, $pipedrive_client_id){
+        $data = array(
+            'file' => curl_file_create($filename),
+            'org_id' => $pipedrive_client_id
+        );
+         
+        $url = 'https://' . $company_domain . '.pipedrive.com/v1/files?api_token=' . $api_token;
+         
+         
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+         
+        $output = curl_exec($ch);
+        curl_close($ch);
+         
+        $result = json_decode($output, true);
+         
+        if (!empty($result['data']['id'])) {
+            return TRUE;
+        }
+    }
     if(isset($_POST['estimated-volume'])){
 
         $client_id                    = $_POST['client_id'];
@@ -694,6 +726,14 @@ $(document).ready(function(){
             return ((salePriceCalc + decoChargesCalc) * (orderPurposeMarkup[$('.what-happens').val()]/estimatedAnnualTurns) * (stockSizeType[itemSize]));
         }
     }
+    function calculateProjectWarehouseCharges(){
+        let salePriceCalc = calculateSalePriceForItem();
+        let decoChargesCalc = calculateDecoCharges();
+        
+        if(estimatedAnnual != ""){
+            return ((salePriceCalc + decoChargesCalc) * (orderPurposeMarkup[$('.what-happens').val()]) * (stockSizeType[itemSize]));
+        }
+    }
     function calculateRunCharges(){
         let screensFront = checkValue($(".print-screens-front").val());
         let screensBack  = checkValue($(".print-screens-back").val());
@@ -713,6 +753,22 @@ $(document).ready(function(){
         }
         else{
             let estimatedAnnualTurns = estimatedAnnual/purchaseQuantity;
+            return  embroiderySetup + heatpressSetup;
+        }
+    }
+    function calculateProjectRunCharges(){
+        let screensFront = checkValue($(".print-screens-front").val());
+        let screensBack  = checkValue($(".print-screens-back").val());
+        let screensOther = checkValue($(".print-screens-other").val());
+        let screenCharges = (screensFront + screensBack + screensOther) * perScreenResetCharge;
+
+        if(calculateDesignServices() == 0 && screensFront != 0 && screensBack != 0){
+            return (screenCharges + embroiderySetup + heatpressSetup);
+        }
+        else if(screensFront != 0 && screensBack != 0){
+            return (screenCharges + embroiderySetup + heatpressSetup);
+        }
+        else{
             return  embroiderySetup + heatpressSetup;
         }
     }
@@ -738,19 +794,19 @@ $(document).ready(function(){
     
     //project
     $("#sell-price-online").text(formatter.format(calculateSalePriceForItem()));
-    $("#design-services-project").text(formatter.format(calculateDesignServices()));
+    $("#design-services-project").text(formatter.format(calculateDesignServices())); //same as online
     $("#decoration-charges-project").text(formatter.format(calculateDecoCharges()));
-    $("#internal-shipping-project").text(formatter.format(calculateInternalShipping()));
+    $("#internal-shipping-project").text(formatter.format(0.00));
     $("#merchant-services-project").text(formatter.format(calculateMerchantServices()));
-    $("#annual-store-charges-project").text(formatter.format(calculateStoreCharges()));
-    $("#warehousing-charges-project").text(formatter.format(calculateWarehouseCharges()));
-    $("#setup-run-charges-project").text(formatter.format(calculateRunCharges()));
+    $("#annual-store-charges-project").text(formatter.format(0.00)); //No Online Store Charges
+    $("#warehousing-charges-project").text(formatter.format(calculateProjectWarehouseCharges()));
+    $("#setup-run-charges-project").text(formatter.format(calculateProjectRunCharges()));
     $("#sale-price-total-project").text(formatter.format(sumAllCharges()));
     $(".all-in-sales-price-project").text(formatter.format(sumAllCharges()/estimatedAnnual));
 
     $("#total-per-item-charge-project").text(formatter.format(calculateSalePriceForItem()/estimatedAnnual));
-    $("#total-project-charges").text(formatter.format(calculateRunCharges() + calculateDesignServices() + (calculateStoreCharges() +
-                calculateWarehouseCharges() + calculateInternalShipping())));
+    $("#total-project-charges").text(formatter.format(calculateProjectRunCharges() + calculateDesignServices() + (0.00 +
+                calculateProjectWarehouseCharges() + 0.00)));
     $("#shipping-project").text(formatter.format(getProjectShipping()));
 
   });
