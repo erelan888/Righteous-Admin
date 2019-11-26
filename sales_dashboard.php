@@ -305,7 +305,7 @@ if(isset($_GET['client_id'])){
                                             alert(status); // status 0 - when load is interrupted
                                         } 
                                     },
-                                    timeout: 180000
+                                    timeout: 360000
                                 });
                             } 
                     });
