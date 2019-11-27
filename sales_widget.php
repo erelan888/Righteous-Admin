@@ -17,9 +17,16 @@
     //error_reporting( E_ALL );
     //ini_set( "display_errors", 1 );
     include_once("includes/inc-dbc-conn.php");
-    function create_file($data){
-        //TODO: create file and store it on server, so it can then be pushed to pipedrive. 
+    function create_file($name, $data){
 
+        $date     = date('Y-m-d');
+        $filename = "sales-calculations/" . $name . "_" . $date . "_" . '.csv';
+        $file = fopen($filename,'w');
+
+        fputcsv( $file, $data, ',', '"' );
+        fclose( $file );
+
+        return $filename;
     }
     function push_to_pipedrive($filename, $pipedrive_client_id){
         $data = array(
@@ -103,6 +110,10 @@
         $message = "";
         if($conn->query($insert_query) === TRUE){
             $message = "Pricing Calculation Saved!";
+            //create file
+            //push to pipedrive
+            $file_name = create_file($_POST['sourced-item'],$_POST);
+           // push_to_pipedrive($file_name,$client_id);
         }
         else{
             echo $insert_query . "<br>\n\r";
