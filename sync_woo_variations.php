@@ -117,8 +117,8 @@
         $price       =  $result_array->price;
 
 
-        $update_query = "UPDATE `admin_client_woocommerce_legacy_variations` SET(`stock_quantity`=" . (empty($stock_quantity)?0:$stock_quantity) 
-                    . ", `variation_price`=" . $price . ") WHERE `client_id`=" . $client_id . " AND `variation_id`=" . $_variation_id;
+        $update_query = "UPDATE `admin_client_woocommerce_legacy_variations` SET `stock_quantity`=" . (empty($stock_quantity)?0:$stock_quantity) 
+                    . ", `variation_price`=" . $price . " WHERE `client_id`=" . $client_id . " AND `variation_id`=" . $_variation_id;
                 
         if($conn->query($update_query) === TRUE){
             echo "Variation Updated...\n<br>";
