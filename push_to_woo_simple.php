@@ -84,6 +84,7 @@
             $temp = explode("|",$category);
             $category = array("id"=>$temp[0]);
         }
+        
         $image_query   = "SELECT * FROM `admin_product_attachments` WHERE `product_id`=" . $product_id;
         $image_results = mysqli_query($conn, $image_query);
         $image_data = mysqli_fetch_assoc($image_results);
@@ -104,9 +105,9 @@
         $product->categories[]      = $category;
         $product->images[]          = $image;
         $product->name              = $product_title;
-        $product->dimensions[]      = array("height"=>$height, 
-                                            "width"=>$width, 
-                                            "length"=>$length);
+        $product->dimensions[]      = array("height"=>"$height", 
+                                            "width"=>"$width", 
+                                            "length"=>"$length");
         $product->weight            = $weight;
         
         $upload_me = json_encode($product);
@@ -142,6 +143,7 @@
             }
         }
         else{
+            print("<pre>". print_r($return,true) ."</pre>");
             echo "no id found";
         }
     }
