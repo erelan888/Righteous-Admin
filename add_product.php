@@ -69,13 +69,13 @@
        $sizes                         = $_POST['size'];
        $size_chart                    = $_POST['size_chart'];
        //prices
-       $product_cost_net              = $_POST['product_net_cost'];
-       $product_corp_price            = $_POST['product_corp'];
-       $product_retail_price          = $_POST['product_retail'];
+       $product_cost_net              = str_replace("$","",$_POST['product_net_cost']);
+       $product_corp_price            = str_replace("$","",$_POST['product_corp']);
+       $product_retail_price          = str_replace("$","",$_POST['product_retail']);
        $product_upcharges             = $_POST['upcharge'];
-       $product_length                = $_POST['product_length'];
-       $product_width                 = $_POST['product_width'];
-       $product_height                = $_POST['product_height'];
+       $product_length                = str_replace("\"","",$_POST['product_length']);
+       $product_width                 = str_replace("\"","",$_POST['product_width']);
+       $product_height                = str_replace("\"","",$_POST['product_height']);
        $product_weight                = $_POST['weight'];
        $product_decoration_array      = $_POST['decoration'];
        $product_deco_instructions     = mysqli_real_escape_string($conn,$_POST['deco_instructions']);
@@ -259,7 +259,7 @@
     }
         ?>
     <html>
-        <head>
+        <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Add Product Development Sheet - RCHQ Admin Area</title>
         <meta name="robots" content="noindex,nofollow"/>
         <?php
@@ -340,15 +340,20 @@
                             $category_query = "SELECT * FROM `admin_client_woocommerce_categories` WHERE `client_id`=" . $client_id;
                             $cat_results = mysqli_query($conn, $category_query);
                         ?>
-                        <li>Product Categories*: <select class="form-control" name="product_categories" required="required">
+                        <li>Product Categories*: 
                         <?php
+                            if(!empty($categories)){
+                                echo "<select class=\"form-control\" name=\"product_categories\" required=\"required\">";
                                 while($categories = mysqli_fetch_assoc($cat_results)){
                                     echo "<option value='" . $categories['category_id'] . "|" . $categories['category_title'] . "'>". $categories['category_title'] . "(" . $categories['category_id'] . ")</option>";
                                 }
+                            }
+                            else{
+                                echo "<input type='text' class=\"form-control\" name=\"product_categories\" required=\"required\">";
+                            }
                         ?>
                         </select></li>
                         <li>Colors: <input type="text" class="form-control" value="" name="product_colors"/></li>
-                        <li>Thread Colors: <input type="text" class="form-control" value="" name="thread_colors"/></li>
                         </ul>
                         </div>
                         </div>
@@ -438,7 +443,7 @@
                         <li>Detail:<input type="text" class="form-control" value="" name="detail"/></li>
                         <li>Number:<input type="text" class="form-control" value="" name="detail_number"/></li>
                         <li>File Name:<input type="text" class="form-control" value="" name="file_name"/></li>
-                        
+                        <li>Thread Colors: <input type="text" class="form-control" value="" name="thread_colors"/></li>
                     </ul>   
                     </div>
                         </div>
