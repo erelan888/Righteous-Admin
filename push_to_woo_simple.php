@@ -82,9 +82,8 @@
 
         if(strpos($category,"|") !== false){
             $temp = explode("|",$category);
-            $category = array("id"=>$temp[0]);
+            $category = array("id"=>trim($temp[0]));
         }
-        
         $image_query   = "SELECT * FROM `admin_product_attachments` WHERE `product_id`=" . $product_id;
         $image_results = mysqli_query($conn, $image_query);
         $image_data = mysqli_fetch_assoc($image_results);
@@ -92,9 +91,7 @@
         if(isset($image_data['file_name'])){
             $image = array("src"=>"http://admin.authenticmerch.com/" . $image_data['file_name'] ."\"");
         }
-        else{
-            $image = array("src"=>"");
-        }
+       
         
 
         //that JSON tho...
@@ -118,10 +115,10 @@
         . $consumer_key . "&consumer_secret=" . $consumer_secret;
                 
         $ch = curl_init($request_url);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                  
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);                                                                     
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $upload_me);                                                                  
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                    
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);                    
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $upload_me);                   
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                     
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
                 'Content-Type: application/json',                                                                                
                 'Content-Length: ' . strlen($upload_me))                                                                       
@@ -144,7 +141,7 @@
         }
         else{
             print("<pre>". print_r($return,true) ."</pre>");
-            echo "no id found";
+            print("<pre>". print_r($upload_me,true)."</pre>");
         }
     }
     else{
