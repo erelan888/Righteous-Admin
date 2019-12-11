@@ -12,8 +12,8 @@
     else{
         //add_activity($user_id,"Added User");
     }
-    //error_reporting( E_ALL );
-    //ini_set( "display_errors", 1 );
+    error_reporting( E_ALL );
+    ini_set( "display_errors", 1 );
 
      //DB Server info
      $servername = "localhost";
@@ -53,7 +53,52 @@
                 continue;
             }
         }
+    }
+    function check_for_product_type($product){
+        if(!empty($product['colors']) && (strpos($product['colors'],",") > -1)){
+            return "variable";
+        }
+        else{
+            if($product['size_osfm'] == 1 || $product['size_na'] ==1){
+                return "simple";
+            }
+            else{
+                return "variable";
+            }
+        }
+    }
+    function get_categories($data, $client_id){
+        global $conn;
+        if(strpos($data,"|") !== false){
+            $temp = explode("|",$data);
+            return array("id"=>trim($temp[0]));
+        }
+        else{
+            $category_query = "SELECT * FROM `admin_client_woocommerce_categories` WHERE `client_id`=" . $client_id;
+            $category_results = mysqli_query($conn, $category_query);
+
+            while($categories = mysqli_fetch_assoc($category_results)){
+                $title       = $categories['category_title'];
+                $category_id = $categories['category_id'];
+
+                if(strpos($title,"Uncategorized") !== false){
+                    return trim($category_id);
+                }
+            }
+        }
+    }
+    function get_images($product_id){
+        global $conn;
+        $image_query   = "SELECT * FROM `admin_product_attachments` WHERE `product_id`=" . $product_id;
+        $image_results = mysqli_query($conn, $image_query);
         
+        $image[] = array();
+        while($images = mysqli_fetch_assoc($image_results)){
+            if(isset($images['file_name'])){
+                $image[] = array("src"=>"http://admin.authenticmerch.com/" . $images['file_name'] ."\"");
+            }
+        }
+        return $image;
     }
     /*
         /wp-json/wc/v3/products?consumer_key=" + consumerKey + "&consumer_secret=" + consumerSecret;
@@ -66,7 +111,7 @@
         $consumer_key    = $_GET['consumer_key'];
 
         $product_query = "SELECT * FROM `admin_client_products` WHERE `_id`=" . $product_id;
-        $results = mysqli_query($conn, $product_query);
+        $results       = mysqli_query($conn, $product_query);
 
         $product_data  = mysqli_fetch_assoc($results);
         $corp_price    = $product_data['pricing_corporate'];
@@ -78,34 +123,24 @@
         $length        = $product_data['product_length'];
         $width         = $product_data['product_width'];
         $height        = $product_data['product_height'];
-        $product_type  = "simple";
+        $product_type  = check_for_product_type($product_data);
 
-        if(strpos($category,"|") !== false){
-            $temp = explode("|",$category);
-            $category = array("id"=>trim($temp[0]));
-        }
-        $image_query   = "SELECT * FROM `admin_product_attachments` WHERE `product_id`=" . $product_id;
-        $image_results = mysqli_query($conn, $image_query);
-        $image_data = mysqli_fetch_assoc($image_results);
+        //TODO: Add Attribute support for variation attributes
+        $category = get_categories($category, $client_id);
         
-        if(isset($image_data['file_name'])){
-            $image = array("src"=>"http://admin.authenticmerch.com/" . $image_data['file_name'] ."\"");
-        }
-       
-        
-
         //that JSON tho...
-        $product->type              = $product_type;
+        $product->type              = "simple"; //$product_type;
         $product->regular_price     = ($retail_price > 0? $retail_price: $corp_price);
         $product->description       = $description;
         $product->short_description = $description;
         $product->categories[]      = $category;
-        $product->images[]          = $image;
+        $product->images[]          = get_images($product_id);
         $product->name              = $product_title;
-        $product->dimensions[]      = array("height"=>"$height", 
-                                            "width"=>"$width", 
-                                            "length"=>"$length");
-        $product->weight            = $weight;
+        
+        $product->dimensions->height = $height; 
+        $product->dimensions->width  = $width; 
+        $product->dimensions->length = $length;
+        $product->weight             = $weight;
         
         $upload_me = json_encode($product);
 

@@ -31,7 +31,7 @@
         global $consumer_secret;
 
         $request_url = $client_url . "/wp-json/wc/v3/orders?" 
-        . "consumer_key=" . $consumer_key . "&consumer_secret=" . $consumer_secret . "&per_page=20&after=2019-11-11T00:00:00&status=completed,processing&page=". $page ;
+        . "consumer_key=" . $consumer_key . "&consumer_secret=" . $consumer_secret . "&per_page=20&after=2019-01-01T00:00:00&status=completed,processing&page=". $page ;
         
         //echo "Request URL: " . $request_url . "<br>\n";
         $ch = curl_init($request_url);
@@ -97,6 +97,18 @@
         global $conn;
         $line_item_check = "SELECT * FROM `admin_client_order_line_items` WHERE `line_item_id`=" . $line_item_id . " AND `order_id`='" . $full_order_number . "';";
         $check_results = mysqli_query($conn, $line_item_check);
+
+        if(mysqli_num_rows($check_results) > 0){
+            return TRUE;
+        }
+        else{
+            return FALSE;
+        }
+    }
+    function check_for_billing_data($full_order_number){
+        global $conn;
+        $billing_check = "SELECT * FROM `admin_client_woocommerce_orders_customer_details` WHERE `full_order_number`='" . $full_order_number . "';";
+        $check_results = mysqli_query($conn, $billing_check);
 
         if(mysqli_num_rows($check_results) > 0){
             return TRUE;
@@ -192,6 +204,9 @@
             foreach($result_array as $order){
                 if(check_for_order($client_id,$order->number) === FALSE){
                     upload_order($client_id, $order);
+                    upload_billing_details($order->number,$order->billing, $order->shipping);
+                }
+                else if(check_for_billing_data($order->number) === FALSE){
                     upload_billing_details($order->number,$order->billing, $order->shipping);
                 }
                 foreach($order->line_items as $item){

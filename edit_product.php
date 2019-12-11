@@ -167,7 +167,7 @@
                         <a class="btn" onclick="$('.notes-side-block').toggle(300);" style="cursor: pointer"><i class="far fa-clipboard"></i> Product Notes <span style="color: #D02030;">(<b><?php echo $notes_count; ?></b>)
                         <a class="btn" onclick="$('#attachment_form').toggle(300);" style="cursor:pointer;"><i class="far fa-image"></i> Add Image</a>
                         <a class="btn" href="https://admin.authenticmerch.com/duplicate_pds.php?product_id=<?php echo $product_id; ?>"><i class="fas fa-copy"></i> Duplicate PDS</a>
-                        <?php if($product_uploaded == 0 && ($product_sizes_osfm ==1 || $product_sizes_na==1){ ?>
+                        <?php if($product_uploaded == 0 && ($product_sizes_osfm ==1 || $product_sizes_na==1)){ ?>
                         <a class="btn btn-info" id="sentToWoo" style="cursor: pointer; color: #fff;"><i class="fas fa-paper-plane"></i> Send to Woo</a>
                         <?php }?>
                     </span></a></p>
