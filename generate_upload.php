@@ -30,38 +30,13 @@
         die("Connection failed: " . $conn->connect_error);
     } 
     
-    if(isset($_GET['date_to']) && isset($_GET['date_from']) && isset($_GET['type'])){
-        $date_to     = $_GET['date_to'];
-        $date_from   = $_GET['date_from'];
+    if(isset($_GET['type'])){
         $upload_type = $_GET['type'];
         
-        $omega_query = "SELECT * FROM `admin_client_order_line_items` items
-                        RIGHT JOIN `admin_client_woocommerce_orders_customer_details` details 
-                        ON items.order_id = details.full_order_number
-                        LEFT JOIN `admin_client_woocommerce_orders` orders
-                        ON items.order_id = orders.number
-                        LEFT JOIN `admin_client_details` clients
-                        ON orders.client_id = clients._client_id
-                        WHERE items.order_id IN (SELECT number FROM `admin_client_woocommerce_orders` WHERE date_created BETWEEN '" 
-                        . $date_from . "' AND '" . $date_to . "')";
-
-        /*
-            SELECT
-            booking.booking_id,
-            customer.first_name,
-            customer.last_name,
-            aircraft.aircraft_id,
-            aircraft_model.aircraft_model
-            FROM
-            booking
-            INNER JOIN customer ON customer.customer_id = booking.customer_id
-            INNER JOIN aircraft ON aircraft.aircraft_id = booking.aircraft_id
-            INNER JOIN aircraft_model ON aircraft_model.aircraft_model_id = 
-            aircraft.aircraft_model_id;
-        */
+        $omega_query = "SELECT * FROM `admin_upload_file_queue`";
         $result = mysqli_query($conn, $omega_query);
 
-        $output = "_id,order_id,line_item_id,name,woo_product_id,woo_variation_id,woo_quantity,tax_class,subtotal,total_tax,product_sku,price,full_order_number,billing_first_name,billing_last_name,billing_company,billing_address_1,billing_address_2,billing_city,billing_state,billing_postcode,billing_country,billing_email,billing_phone,shipping_first_name,shipping_last_name,shipping_company,shipping_address_1,shipping_address_2,shipping_city,shipping_state,shipping_postcode,shipping_country,_id,client_id,number,version,status,currency,date_created,date_modified,discount_total,discount_tax,shipping_total,shipping_tax,cart_tax,total,customer_id,customer_ip_address,payment_method,payment_method_title,date_paid,date_completed,client_id,client_name,upload_name" . PHP_EOL_FIX;
+        $output = "_id,order_id,line_item_id,name,woo_product_id,woo_variation_id,woo_quantity,tax_class,subtotal,total_tax,product_sku,price,full_order_number,billing_first_name,billing_last_name,billing_company,billing_address_1,billing_address_2,billing_city,billing_state,billing_postcode,billing_country,billing_email,billing_phone,shipping_first_name,shipping_last_name,shipping_company,shipping_address_1,shipping_address_2,shipping_city,shipping_state,shipping_postcode,shipping_country,_id,client_id,number,version,status,currency,date_created,date_modified,discount_total,discount_tax,shipping_total,shipping_tax,cart_tax,total,customer_id,customer_ip_address,payment_method,payment_method_title,date_paid,date_completed,client_name,upload_name" . PHP_EOL_FIX;
 
         while($line = mysqli_fetch_assoc($result)){
             //this makes account funds, cost center id's Purchase Order

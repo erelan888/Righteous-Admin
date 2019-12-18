@@ -114,7 +114,7 @@ if(isset($_GET['client_id'])){
                  <div id="date_block">
                   <p style="font-size: 12px;margin-bottom: 0px;">Choose Date Range:</p>
                             <input type="date" name="date_from" id="date_from" value="<?php echo $date_from; ?>"  class="form-control-sm"/> to <input type="date" name="date_to" id="date_to" value="<?php echo $date_to; ?>" class="form-control-sm"/>
-                            <a class="btn btn-primary btn-sm" style="cursor: pointer; position: relative; top: -2px;" id="refresh_date"><i class="fas fa-undo" style="color: #fff;"></i></a>
+                            <a class="btn btn-info btn-sm" style="cursor: pointer; position: relative; top: -2px;" id="refresh_date"><i class="fas fa-undo" style="color: #fff;"></i></a>
                             <script type="text/javascript">
                                 $(document).ready(function(){
                                     $("#refresh_date").click(function(){
@@ -257,10 +257,11 @@ if(isset($_GET['client_id'])){
                 <a style="cursor: pointer;" id="export_data_button"><i class="fas fa-file-download"></i> Export Sales Data</a>
                 <a style="cursor: <?php echo (empty($date_to)?"disabled":"pointer") ?>; padding-left: 10px; padding-right: 10px;" id="generate_full_product_sales_report_button" title="Add date filters to enable this report"><i class="fas fa-file-download"></i> Generate Product Sales Report</a>
                 <?php
-                    if($username == "dustingunter" || $username == "Jennifer" || $username = "Jerica" || $username == "Amy" || $username = "Mary"){
+                   // if($username == "dustingunter" || $username == "Jennifer" || $username = "Jerica" || $username == "Amy" || $username = "Mary"){
+                        if($username == "dustingunter"){
                 ?>
-                <a data="Purchase Order" href="#" class="btn btn-info generateUpload" ><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-money-check-alt"></i> Purchase Order Upload</a>
-                <a data="Credit Card" href="#" class="btn btn-info generateUpload"><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-credit-card"></i> Credit Card Upload</a>
+                <a data="Purchase Order" class="btn btn-info generateUpload" ><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-money-check-alt"></i> Purchase Order Upload</a>
+                <a data="Credit Card" class="btn btn-info generateUpload"><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-credit-card"></i> Credit Card Upload</a>
                 <?php
                     }
                 ?>
@@ -273,7 +274,7 @@ if(isset($_GET['client_id'])){
                          var type     = $(this).attr('data');
                          var spinner  = $(this).children(".spinner-grow");
                          $(this).children(".spinner-grow").fadeIn();
-                         var urlData = "test/generate_upload_order_lines.php?type=" + type + "&date_to=<?php echo $date_to; ?>&date_from=<?php echo $date_from; ?>";
+                         var urlData = "test/generate_upload_order_lines.php?type=" + type;
                                 if(toDate != ""){
                                     $.ajax({
                                     url: urlData,
@@ -305,7 +306,7 @@ if(isset($_GET['client_id'])){
                                             alert(status); // status 0 - when load is interrupted
                                         } 
                                     },
-                                    timeout: 360000
+                                    timeout: 720000
                                 });
                             } 
                     });

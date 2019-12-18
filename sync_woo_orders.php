@@ -142,6 +142,21 @@
             echo mysqli_error($conn) . "<br>\n";
         }
     }
+function upload_tax_lines(){
+    //TODO
+}
+function upload_shipping_lines(){
+    //TODO
+}
+function upload_fee_lines(){
+    //TODO
+}
+function upload_coupon_lines(){
+    //TODO
+}
+function upload_refunds(){
+    //TODO
+}
     function upload_billing_details($full_order_number, $billing, $shipping){
         global $conn;
 

@@ -134,7 +134,7 @@
         $product->description       = $description;
         $product->short_description = $description;
         $product->categories[]      = $category;
-        $product->images[]          = get_images($product_id);
+        //$product->images[]          = get_images($product_id);
         $product->name              = $product_title;
         
         $product->dimensions->height = $height; 
