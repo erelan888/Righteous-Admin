@@ -39,7 +39,7 @@
      }
 ?>
 <html>
-        <head>
+        <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title><?php echo $client_name; ?> Catalog - RCHQ Admin Area</title>
         <meta name="robots" content="noindex,nofollow"/>
         <?php
@@ -96,7 +96,7 @@
                         $is_discontinued         = $product_details['is_discontinued'];
                 ?>
                         <tr class="product_row <?php echo $product_stock_ownership; ?>">
-                            <td><a href="edit_product.php?product_id=<?php echo $product_id; ?>" title="Edit Product Info"><?php echo $product_name; ?></a></td>
+                            <td><a href="edit_product.php?product_id=<?php echo $product_id; ?>&client_id=<?php echo $client_id; ?>" title="Edit Product Info"><?php echo $product_name; ?></a></td>
                             <td><?php echo $vendor; ?></td>
                             <td><?php echo $vendor_product_number; ?></td>
                             <td>$<?php echo $pricing_cost_net; ?></td>
@@ -105,7 +105,7 @@
                             <td><?php echo $product_stock_ownership; ?></td>
                             <td><?php echo $product_ships_from; ?></td>
                             <td><?php echo ($is_discontinued == 1 ? "Yes" : "No"); ?></td>
-                            <td><a href="edit_product.php?product_id=<?php echo $product_id; ?>" title="Edit Product Info"><i class="fas fa-edit"></i></a>
+                            <td><a href="edit_product.php?product_id=<?php echo $product_id; ?>&client_id=<?php echo $client_id; ?>" title="Edit Product Info"><i class="fas fa-edit"></i></a>
                         </tr>
                 <?php
                     }
