@@ -40,18 +40,22 @@
 
         while($line = mysqli_fetch_assoc($result)){
             //this makes account funds, cost center id's Purchase Order
+            //check for employee payroll deduct - These do not need to be included in quickbooks from this upload. They are handled in billing logs later
+            if($line['client_id'] == 9 || $line['client_id'] == 20){
+                if(strpos($line["payment_method"],'cost_center_id') !== false){
+                    continue;                
+                }
+            }
+            //remove APU and MSA
+            if($line['client_id'] == 1 || $line['client_id'] == 23){
+                continue;
+            }
             if($line['payment_method_title'] != "Purchase Order" && $line['payment_method_title'] != "Credit Card"){
                 $line['payment_method_title'] = "Purchase Order";
             }
             //Makes sure everything thats supposed to say Credit Card, says credit card
             if(strpos($line['payment_method'], 'authnet') !== false || strpos($line['payment_method'],'authorize_net_cim_credit_card') !== false){
                 $line['payment_method_title'] = "Credit Card";
-            }
-            //check for employee payroll deduct - These do not need to be included in quickbooks from this upload. They are handled in billing logs later
-            if($line['client_id'] == 9 || $line['client_id'] == 20){
-                if(strpos($line["payment_method"],'cost_center_id') !== false){
-                    continue;                    
-                }
             }
             if($line['payment_method_title'] == $upload_type){
                 $line['name'] = str_replace(":","",str_replace(",","",substr($line['name'],0,27).'...'));

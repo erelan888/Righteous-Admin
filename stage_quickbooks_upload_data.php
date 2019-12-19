@@ -28,10 +28,20 @@
      if ($conn->connect_error) {
          die("Connection failed: " . $conn->connect_error);
      } 
+     function email_PDS_update($email, $user_cc,$email_subject,$output){
+        $headers = array("From: qb-data-stage@authenticmerch.com",
+            "Reply-To: no-reply@authenticmerch.com",
+            "Content-type:text/html;charset=UTF-8",
+            "CC: " . $user_cc,
+            "X-Mailer: PHP/" . PHP_VERSION );
 
+        $headers = implode("\r\n", $headers);
+
+        mail($email,$email_subject,$output,$headers);
+    }
      function fetch_orders($date_from, $date_to){
         global $conn;
-        $orders_query = "SELECT number FROM `admin_client_woocommerce_orders` WHERE date_created BETWEEN '" . $date_from . "' AND '" . $date_to . "';";
+        $orders_query = "SELECT number FROM `admin_client_woocommerce_orders` WHERE date_created BETWEEN '" . $date_from . "' AND '" . $date_to . "' GROUP BY _id;";
         $results = mysqli_query($conn, $orders_query);
 
         return $results;
@@ -62,11 +72,10 @@
             . $line_item['price'] ."')";
 
             if($conn->query($insert_query) === TRUE){
-                return TRUE;
+                attach_customer_data($order_number);
             }
             else{
                 echo mysqli_error($conn) . "<br>";
-                return FALSE;
             }
         }
      }
@@ -101,11 +110,10 @@
             " WHERE `order_id`='"   . $order_number . "';";
 
             if($conn->query($update_query) === TRUE){
-                return true;
+                attach_order_data($order_number);
             }
             else{
                 echo mysqli_error($conn) . "<br>";
-                return false;
             }
         }
      }
@@ -140,13 +148,12 @@
             " WHERE order_id='"     . $order['number'] . "';";
 
             if($conn->query($update_query) === TRUE){
-                attach_client_data($order['number'], $order_client_id);
+                attach_client_data($order['number'], $order_client_id); 
             }
             else{
-                echo mysqli_error($conn) . "<br>";
+                echo mysqli_error($conn) . "<br>";  
             }
         }
-
      }
      function attach_client_data($order_id, $client_id){
         global $conn;
@@ -154,20 +161,15 @@
         $client_data = "SELECT * FROM `admin_client_details` WHERE _client_id=" . $client_id;
         $clients = mysqli_query($conn, $client_data);
         $client = mysqli_fetch_assoc($clients);
-
+        echo "Attaching client data...\r\n<br>";
         $update_query = "UPDATE `admin_upload_file_queue` 
         SET client_name='"       . mysqli_real_escape_string($conn, $client['client_name']) . "'," .
         "upload_name='"          . mysqli_real_escape_string($conn, $client['name_for_upload']) . "' " .
         " WHERE order_id='"     . $order_id . "';";
 
-        if($conn->query($update_query) === TRUE){
-            return true;
-        }
-        else{
+        if($conn->query($update_query) === FALSE){
             echo mysqli_error($conn) . "<br>";
-            return false;
         }
-
      }
 
      if(isset($_GET['date_from'])){
@@ -178,20 +180,23 @@
          $date_to   = date("Y-m-d");
          $date_from = date('Y-m-d', strtotime('-7 days'));
      }
-         echo "Retrieving Order Data...\r\n<br>";
-         $orders = fetch_orders($date_from, $date_to);
-         if(!empty($orders)){
-             foreach($orders as $order){
-                 echo "Retrieving Line Items...\r\n<br>";
-                 echo $order['number'] . "\r\n";
-                if(insert_order_line_data($order['number'])){
-                    echo "Retrieving Customer Information...\r\n<br>";
-                    attach_customer_data($order['number']);
-                    echo "Retrieving Remaining Order Meta Information...\r\n<br>";
-                    attach_order_data($order['number']);
-                    echo "Order Update Complete...\r\n<br>";
-                }
-             }
-             echo "Queue Update Complete...\r\n<br>";
-         }
+
+    $clear_data_query = "TRUNCATE TABLE `admin_upload_file_queue`";
+    if($conn->query($clear_data_query) === TRUE){
+        echo "Previous Data Cleared....\r\n<br>"
+    }
+    echo "Retrieving Order Data...\r\n<br>";
+    $orders = fetch_orders($date_from, $date_to);
+    if(!empty($orders)){
+        foreach($orders as $order){
+            echo "Retrieving Data...\r\n<br>";
+            echo $order['number'] . "\r\n";
+            insert_order_line_data($order['number']);
+        }
+        echo "Queue Update Complete...\r\n<br>";
+    }
+    $subject = "Quickbooks data is ready for Upload!";
+    $output = "Quickbooks data has been staged for the past 7 days. Please log into <a href='http://admin.authenticmerch.com'>admin.authenticmerch.com</a> and download the files for transaction upload!";
+    
+        email_PDS_update("customerservice@rchq.com","dustin@rchq.com",$subject, $output);
 ?>

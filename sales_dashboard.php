@@ -257,8 +257,8 @@ if(isset($_GET['client_id'])){
                 <a style="cursor: pointer;" id="export_data_button"><i class="fas fa-file-download"></i> Export Sales Data</a>
                 <a style="cursor: <?php echo (empty($date_to)?"disabled":"pointer") ?>; padding-left: 10px; padding-right: 10px;" id="generate_full_product_sales_report_button" title="Add date filters to enable this report"><i class="fas fa-file-download"></i> Generate Product Sales Report</a>
                 <?php
-                   // if($username == "dustingunter" || $username == "Jennifer" || $username = "Jerica" || $username == "Amy" || $username = "Mary"){
-                        if($username == "dustingunter"){
+                    if($username == "dustingunter" || $username == "Jennifer" || $username = "Jerica" || $username == "Amy" || $username = "Mary"){
+                   //     if($username == "dustingunter"){
                 ?>
                 <a data="Purchase Order" class="btn btn-info generateUpload" ><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-money-check-alt"></i> Purchase Order Upload</a>
                 <a data="Credit Card" class="btn btn-info generateUpload"><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-credit-card"></i> Credit Card Upload</a>
@@ -275,7 +275,7 @@ if(isset($_GET['client_id'])){
                          var spinner  = $(this).children(".spinner-grow");
                          $(this).children(".spinner-grow").fadeIn();
                          var urlData = "test/generate_upload_order_lines.php?type=" + type;
-                                if(toDate != ""){
+                                if(type != ""){
                                     $.ajax({
                                     url: urlData,
                                     success: function (data) {
@@ -306,7 +306,7 @@ if(isset($_GET['client_id'])){
                                             alert(status); // status 0 - when load is interrupted
                                         } 
                                     },
-                                    timeout: 720000
+                                    timeout: 30000
                                 });
                             } 
                     });
@@ -373,14 +373,14 @@ if(isset($_GET['client_id'])){
                             <tr>
                                 <th>Date</th>
                                 <th>Sales</th>
-                                <th>Average Order</th>
+                                <!-- <th>Average Order</th> -->
                             </tr>
                     </thead>
                     <?php
                         $times_array   = explode(",",$timestamp_raw);
                         $year_array    = explode(",",$year_raw);
                         $sale_array    = explode(",",$sales_raw);
-                        $average_array = explode(",",$averages_raw);
+                        //$average_array = explode(",",$averages_raw);
 
                         $limit = count($sale_array);
                         $count = 2;
@@ -390,7 +390,7 @@ if(isset($_GET['client_id'])){
                                 <tr>
                                     <td><?php echo $year_array[count($year_array)- $count] . " " . $times_array[count($times_array)- $count]; ?></td>
                                     <td><?php echo "$ " . number_format($sale_array[count($sale_array)- $count],2) ; ?></td>
-                                    <td><?php echo "$ " . number_format($average_array[count($average_array) - $count],2);?></td>
+                                    <!-- <td><?php echo "$ " . number_format($average_array[count($average_array) - $count],2);?></td> -->
                                 </tr>
                             <?php
                             }

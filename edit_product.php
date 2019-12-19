@@ -159,6 +159,7 @@
                     ?>
                     <h1>Editing: <?php echo $clients_data['client_name']; ?></h1>
                     <h5 style="color: #D02030; font-style:italic;"><?php echo $product_name ?></h5>
+                    <p><span class="badge badge-info"><?php echo $product_vendor ?></span> <span class="badge badge-info"><?php echo $product_vendor_product_number ?></span> <span class="badge badge-info"> <?php echo $product_stock_ownership; ?></span></p>
                     <div class="dashboard-block client-block">
                     <p>
                         <a href="https://admin.authenticmerch.com/catalog.php?client_id=<?php echo $client_id; ?>" class="btn"> <i class="fas fa-undo"></i> Back To Catalog</a> 
