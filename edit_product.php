@@ -209,7 +209,25 @@
                                 <li>Product Name: <input type="text" class="form-control" value="<?php echo $product_name; ?>" name="product_name" required="required"/></li>
                                 
                                 <li>Product Description: <input type="text" class="form-control" value="<?php echo str_replace('"', "", $product_description); ?>" name="product_description" required="required"/></li>
-                                <li>Product Categories: <input type="text" class="form-control" value="<?php echo $product_categories; ?>" name="product_categories" required="required"/></li>
+                                <!-- TODO: get categories from database, then add selected code -->
+                                <li>Product Categories:<select required="required" class="form-control" name="product_categories">
+                                    <option name="Choose Category" value="Choose Category">
+                                <?php
+                                    $product_category_list = "SELECT * FROM `admin_client_woocommerce_categories` WHERE `client_id`=" . $client_id;
+                                    $category_results = mysqli_query($conn, $product_category_list);
+                                    while($category = mysqli_fetch_assoc($category_results)){
+                                        $option =  "<option name='" . $category['category_id'] . "|" . $category['category_title'] 
+                                            . "' value='" . $category['category_id'] . "|" . $category['category_title'] . "'";
+                                        if((strpos($category['category_title'],$product_categories) > -1) || (strpos($category['category_id'] . "|" . $category['category_title'], $product_categories)> -1)){
+                                            $option .= " selected='selected' > " . $category['category_id'] . "|" . $category['category_title'] . "</option>";
+                                        }
+                                        else{
+                                            $option .= "> " . $category['category_id'] . "|" . $category['category_title'] . "</option>";
+                                        }
+                                        echo $option;
+                                    }
+                                ?>
+                                </select></li>
                                 <li>Colors: <input type="text" class="form-control" value="<?php echo $product_colors; ?>" name="colors"/></li>
                                 <li>Thread Colors: <input type="text" class="form-control" value="<?php echo $product_thread_colors; ?>" name="thread_colors"/></li>
                             </ul>

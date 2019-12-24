@@ -255,6 +255,7 @@ if(isset($_GET['client_id'])){
             <p>
                 <a href="https://admin.authenticmerch.com/dashboard.php" class="btn"> <i class="fas fa-undo"></i> Back To Dashboard</a>
                 <a style="cursor: pointer;" id="export_data_button"><i class="fas fa-file-download"></i> Export Sales Data</a>
+                <a style="cursor: pointer;" id="export_inventory_button"><i class="fas fa-file-download"></i> Export Sales Data</a>
                 <a style="cursor: <?php echo (empty($date_to)?"disabled":"pointer") ?>; padding-left: 10px; padding-right: 10px;" id="generate_full_product_sales_report_button" title="Add date filters to enable this report"><i class="fas fa-file-download"></i> Generate Product Sales Report</a>
                 <?php
                     if($username == "dustingunter" || $username == "Jennifer" || $username = "Jerica" || $username == "Amy" || $username = "Mary"){

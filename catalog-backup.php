@@ -95,7 +95,7 @@
                         $product_ships_from      = $product_details['product_ships_from'];
                         $is_discontinued         = $product_details['is_discontinued'];
                 ?>
-                        <tr class="product_row <?php echo $product_stock_ownership; ?>">
+                        <tr class="product_row <?php echo $product_stock_ownership; ?> <?php echo ($is_discontinued == 1? "discontinued":""); ?>">
                             <td><a href="edit_product.php?product_id=<?php echo $product_id; ?>&client_id=<?php echo $client_id; ?>" title="Edit Product Info"><?php echo $product_name; ?></a></td>
                             <td><?php echo $vendor; ?></td>
                             <td><?php echo $vendor_product_number; ?></td>
