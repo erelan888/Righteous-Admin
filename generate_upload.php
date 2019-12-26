@@ -3,8 +3,8 @@
     session_start();
     
     define("PHP_EOL_FIX","\r\n");
-    $user_id = $_SESSION["user_id"];
-    $username = $_SESSION['username'];
+    $user_id          = $_SESSION["user_id"];
+    $username         = $_SESSION['username'];
     $permission_level = $_SESSION["permission_level"];
     if(!$user_id){
         //redirect to login
@@ -17,10 +17,10 @@
     ini_set( "display_errors", 1 );
 
     //DB Server info
-    $servername = "localhost";
+    $servername  = "localhost";
     $db_username = "fe32045_dev_dustin";
     $db_password = "@TbGG3Fdau1m";
-    $db = "fe32045_admin_catalog";
+    $db          = "fe32045_admin_catalog";
     // Create connection
     global $conn;
     $conn = new mysqli($servername, $db_username, $db_password,$db);
@@ -58,13 +58,18 @@
                 $line['payment_method_title'] = "Credit Card";
             }
             if($line['payment_method_title'] == $upload_type){
-                $line['name'] = str_replace(":","",str_replace(",","",substr($line['name'],0,27).'...'));
-                $line['billing_company'] = str_replace(",","",$line['billing_company']);
-                $line['shipping_address_1'] = str_replace(",","",$line['shipping_address_1']);
-                $line['shipping_company'] = str_replace(",","",$line['shipping_company']);
+                $line['name']                = str_replace(":","",str_replace(",","",substr($line['name'],0,27).'...'));
+                $line['billing_company']     = str_replace(":","",str_replace(",","",substr($line['billing_company'],0,27).'...'));
+                $line['billing_company']     = str_replace(",","",$line['billing_company']);
+                $line['billing_company']     = str_replace("'","",$line['billing_company']);
+                $line['billing_address_1']   = str_replace(",","",$line['billing_address_1']);
+                $line['shipping_address_1']  = str_replace(",","",$line['shipping_address_1']);
+                $line['shipping_company']    = str_replace(",","",$line['shipping_company']);
+                $line['shipping_company']    = str_replace("'","",$line['shipping_company']);
+                $line['shipping_company']    = str_replace(":","",str_replace(",","",substr($line['shipping_company'],0,27).'...'));
 
-                $temp_date = strtotime($line['date_created']);
-                $line['date_created'] = date('m/d/Y',$temp_date);
+                $temp_date                   = strtotime($line['date_created']);
+                $line['date_created']        = date('m/d/Y',$temp_date);
 
                 //put all names on one line
                 $line['billing_first_name']  = $line['billing_first_name'] . " " . $line['billing_last_name'];
