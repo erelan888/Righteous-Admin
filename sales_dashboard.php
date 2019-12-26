@@ -264,7 +264,7 @@ if(isset($_GET['client_id'])){
                 <a data="Purchase Order" class="btn btn-info generateUpload" ><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-money-check-alt"></i> Purchase Order Upload</a>
                 <a data="Credit Card" class="btn btn-info generateUpload"><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-credit-card"></i> Credit Card Upload</a>
                 <?php
-                    }
+                    } 
                 ?>
             </p>
             <script type="text/javascript">
