@@ -252,21 +252,27 @@ if(isset($_GET['client_id'])){
                     </script>
                 </div>
             </div>
-            <p>
+            
                 <a href="https://admin.authenticmerch.com/dashboard.php" class="btn"> <i class="fas fa-undo"></i> Back To Dashboard</a>
-                <a style="cursor: pointer;" id="export_data_button"><i class="fas fa-file-download"></i> Export Sales Data</a>
-                <a style="cursor: pointer;" id="export_inventory_button"><i class="fas fa-file-download"></i> Export Sales Data</a>
-                <a style="cursor: <?php echo (empty($date_to)?"disabled":"pointer") ?>; padding-left: 10px; padding-right: 10px;" id="generate_full_product_sales_report_button" title="Add date filters to enable this report"><i class="fas fa-file-download"></i> Generate Product Sales Report</a>
-                <?php
-                    if($username == "dustingunter" || $username == "Jennifer" || $username = "Jerica" || $username == "Amy" || $username = "Mary"){
-                   //     if($username == "dustingunter"){
-                ?>
-                <a data="Purchase Order" class="btn btn-info generateUpload" ><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-money-check-alt"></i> Purchase Order Upload</a>
-                <a data="Credit Card" class="btn btn-info generateUpload"><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-credit-card"></i> Credit Card Upload</a>
-                <?php
-                    } 
-                ?>
-            </p>
+                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="float: right;">
+                    <i class="fas fa-file-download" style="padding-right: 10px; padding-left: 10px;"></i> Reports
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" >
+                
+                    <a style="cursor: pointer;" id="export_data_button" class="dropdown-item"><i class="fas fa-file-download"></i> Export Sales Data</a>
+                    <a style="cursor: pointer;" id="export_inventory_button" class="dropdown-item"><i class="fas fa-file-download"></i> Export Inventory Snapshot</a>
+                    <a style="cursor: <?php echo (empty($date_to)?"disabled":"pointer") ?>;" id="generate_full_product_sales_report_button" title="Add date filters to enable this report"  class="dropdown-item"><i class="fas fa-file-download"></i> Export Product Sales Report</a>
+                    <?php
+                        if($username == "dustingunter" || $username == "Jennifer" || $username = "Jerica" || $username == "Amy" || $username = "Mary"){
+                    //     if($username == "dustingunter"){
+                    ?>
+                    <a data="Purchase Order" class="generateUpload dropdown-item" style="cursor: pointer;"><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-money-check-alt"></i> Purchase Order Upload</a>
+                    <a data="Credit Card" class="generateUpload dropdown-item"  style="cursor: pointer;"><span class="spinner-grow" role="status" style="display: none; font-size: 15px;"></span><i class="fas fa-credit-card"></i> Credit Card Upload</a>
+                    <?php
+                        } 
+                    ?>
+                </div>
+            
             <script type="text/javascript">
                 $(document).ready(function(){
                     $(".generateUpload").click(function(){
@@ -310,6 +316,40 @@ if(isset($_GET['client_id'])){
                                     timeout: 30000
                                 });
                             } 
+                    });
+                    $("#export_inventory_button").click(function(){
+                        var urlData = "generate_inventory_snapshot.php?client_id=" + <?php echo $client_id ?>;
+                        $.ajax({
+                            url: urlData,
+                            success: function (data) {
+                                var csvData  = 'data:application/csv;charset=utf-8,' + encodeURIComponent(data);
+                                var fileName = <?php echo $client_id ?> + "-client-inventory-snapshot-<?php echo date('m-d-Y');?>.csv";
+
+                                if (window.navigator.msSaveBlob) { // IE 10+
+                                    alert('IE' + csv);
+                                    window.navigator.msSaveOrOpenBlob(new Blob([data], {type: "text/plain;charset=utf-8;"}), fileName)
+                                } 
+                                else {
+                                    
+                                    var downloadLink = document.createElement("a");
+                                    var blob = new Blob([data], {type: "text/plain;charset=utf-8;"});
+                                    var url = URL.createObjectURL(blob);
+                                    downloadLink.href = url;
+                                    downloadLink.download = fileName;
+
+                                    document.body.appendChild(downloadLink);
+                                    downloadLink.click();
+                                    document.body.removeChild(downloadLink);
+                                    
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                if (xhr.status > 0){
+                                    alert(status); // status 0 - when load is interrupted
+                                } 
+                            },
+                            timeout: 30000
+                        });  
                     });
                 });
             </script>

@@ -28,45 +28,29 @@ ini_set( "display_errors", 1 );
      die("Connection failed: " . $conn->connect_error);
  } 
 if(isset($_GET['client_id'])){
-    $date_from = $_GET['date_from'];
-    $date_to   = $_GET['date_to'];
 
-    $sales_query = "SELECT * FROM `admin_client_details` WHERE `_client_id`=" . $_GET['client_id'];
-    $sales_results = mysqli_query($conn, $sales_query);
-    $results = mysqli_fetch_assoc($sales_results);
-    
-    $client_name = $results['client_name'];
-    $client_id   = $results['_client_id'];
+    $client_id   = $_GET['client_id'];
 
-    $order_number_query = "";
-    if(!empty($date_from) && !empty($date_to)){
-        $order_number_query = "SELECT number FROM `admin_client_woocommerce_orders` WHERE `client_id`=" . $client_id . " AND date_created BETWEEN '" . $date_from . "' AND '" . $date_to . "';";
-    }
-    else{
-        die("No Dates set");
-    }
-
-    $order_number_results = mysqli_query($conn, $order_number_query);
-    $order_list = "";
-    while($order = mysqli_fetch_assoc($order_number_results)){
-            $order_list .= "'" . $order['number'] . "',";
-        }
-    $inventory_query = "SELECT woo_parent_product_sku as sku,  woo_price as price, stock_quantity as quantity, 
-    FROM `fe32045_admin_catalog.admin_client_woocommerce_legacy_products`
-    UNION ALL
-    SELECT variation_sku as sku, variation_price as price, stock_quantity as quantity,
-    FROM `fe32045_admin_catalog.admin_client_woocommerce_legacy_variations`
-    ORDER BY sku;";
-
-
-    $product_results = mysqli_query($conn, $inventory_query);
+    $basic_inventory_query = "SELECT * FROM `admin_client_woocommerce_legacy_products` WHERE `client_id`=" . $client_id;
+    $product_results = mysqli_query($conn, $basic_inventory_query);
     $EOL = "\r\n";
-    $output = "SKU, Price, Quantity" . $EOL;
-    
-    while($product = mysqli_fetch_assoc($product_results)){
-        $output .= $product['product_sku'] . ", $" . $product['price'] . "," . $product['quantity'] . $EOL;
-    }
+    $output = "SKU, Name, Price, Quantity, Attributes" . $EOL;
 
+    while($product = mysqli_fetch_assoc($product_results)){
+        $name = $product['name'];
+        if($product['type'] != 'variable'){
+            $output .= $product['woo_parent_product_sku'] . "," . str_replace(",","",$name) . ",$" . $product['woo_price'] . "," . $product['stock_quantity'] . $EOL; 
+        }
+        else{
+            //variable product get variations instead
+            $variation_query = "SELECT * FROM `admin_client_woocommerce_legacy_variations` WHERE `product_id`=" 
+                            . $product['woo_product_id'] . " AND `client_id`=" . $client_id ;
+            $variation_results = mysqli_query($conn, $variation_query);
+            while($variations = mysqli_fetch_assoc($variation_results)){
+                $output .= $variations['variation_sku'] . "," . str_replace(",","",$name) . ",$" . $variations['variation_price'] . "," . (empty($variations['stock_quantity'])?"":$variations['stock_quantity']) . "," . $variations['attributes'] . $EOL; 
+            }
+        }
+    }
     echo $output;
 }
 else{

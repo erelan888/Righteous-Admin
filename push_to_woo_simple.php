@@ -110,20 +110,20 @@
         $consumer_secret = $_GET['consumer_secret'];
         $consumer_key    = $_GET['consumer_key'];
 
-        $product_query = "SELECT * FROM `admin_client_products` WHERE `_id`=" . $product_id;
-        $results       = mysqli_query($conn, $product_query);
+        $product_query   = "SELECT * FROM `admin_client_products` WHERE `_id`=" . $product_id;
+        $results         = mysqli_query($conn, $product_query);
 
-        $product_data  = mysqli_fetch_assoc($results);
-        $corp_price    = $product_data['pricing_corporate'];
-        $retail_price  = $product_data['pricing_retail'];
-        $description   = $product_data['product_description'];
-        $product_title = $product_data['product_name'];
-        $category      = $product_data['product_categories'];
-        $weight        = $product_data['product_weight'];
-        $length        = $product_data['product_length'];
-        $width         = $product_data['product_width'];
-        $height        = $product_data['product_height'];
-        $product_type  = check_for_product_type($product_data);
+        $product_data    = mysqli_fetch_assoc($results);
+        $corp_price      = $product_data['pricing_corporate'];
+        $retail_price    = $product_data['pricing_retail'];
+        $description     = $product_data['product_description'];
+        $product_title   = $product_data['product_name'];
+        $category        = $product_data['product_categories'];
+        $weight          = $product_data['product_weight'];
+        $length          = $product_data['product_length'];
+        $width           = $product_data['product_width'];
+        $height          = $product_data['product_height'];
+        $product_type    = check_for_product_type($product_data);
 
         //TODO: Add Attribute support for variation attributes
         $category = get_categories($category, $client_id);
