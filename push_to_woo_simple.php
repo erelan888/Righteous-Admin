@@ -87,6 +87,25 @@
             }
         }
     }
+    function create_variations($client_url, $product_id, $base_price, $upcharge){
+        global $consumer_key;
+        global $consumer_secret;
+
+        ///wp-json/wc/v3/products/<product_id>/variations
+        $request_url = $client_url . "/wp-json/wc/v3/products/" . $product_id . "/variations?" . "consumer_key=" 
+        . $consumer_key . "&consumer_secret=" . $consumer_secret;
+
+        foreach ($sizes as $size){
+            foreach($colors as $color){
+                //That JSON though
+                //Submit that JSON
+                $variation=>'regular_price' = $base_price;
+
+                $attributes = array();
+            }
+        }
+        //this still needs images and skus when complete
+    }
     function get_images($product_id){
         global $conn;
         $image_query   = "SELECT * FROM `admin_product_attachments` WHERE `product_id`=" . $product_id;
@@ -98,6 +117,7 @@
                 $image[] = array("src"=>"http://admin.authenticmerch.com/" . $images['file_name'] ."\"");
             }
         }
+        echo "<pre>" . print_r($image) . "</pre>";
         return $image;
     }
     /*
@@ -129,12 +149,12 @@
         $category = get_categories($category, $client_id);
         
         //that JSON tho...
-        $product->type              = "simple"; //$product_type;
+        $product->type              = $product_type;
         $product->regular_price     = ($retail_price > 0? $retail_price: $corp_price);
         $product->description       = $description;
         $product->short_description = $description;
         $product->categories[]      = $category;
-        //$product->images[]          = get_images($product_id);
+        $product->images[]          = get_images($product_id);
         $product->name              = $product_title;
         
         $product->dimensions->height = $height; 
@@ -169,6 +189,7 @@
             if($conn->query($update_query)=== TRUE){
                 send_notification($product_title, $product_id);
                 header("Location: https://admin.authenticmerch.com/edit_product.php?product_id=" . $product_id . "&message=Upload%20Successful&message_type=success");
+                //TODO: Upload variations based off of sizes & color
             }
             else{
                 echo mysqli_error($conn);
@@ -182,3 +203,5 @@
     else{
         echo "Not finding the producty thing";
     }
+
+?>
