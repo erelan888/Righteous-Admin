@@ -102,6 +102,9 @@
                 $variation=>'regular_price' = $base_price;
 
                 $attributes = array();
+                /*
+                    TODO: This is the remaining part for uploading the variations
+                */
             }
         }
         //this still needs images and skus when complete
@@ -188,8 +191,10 @@
             $update_query = "UPDATE `admin_client_products` SET product_uploaded='1' WHERE _id=" . $product_id;
             if($conn->query($update_query)=== TRUE){
                 send_notification($product_title, $product_id);
+                if($product_type == "variable"){
+                    create_variations($client_url, $return->id, $product->regular_price, $product_data['pricing_size_upcharge']);
+                }
                 header("Location: https://admin.authenticmerch.com/edit_product.php?product_id=" . $product_id . "&message=Upload%20Successful&message_type=success");
-                //TODO: Upload variations based off of sizes & color
             }
             else{
                 echo mysqli_error($conn);
