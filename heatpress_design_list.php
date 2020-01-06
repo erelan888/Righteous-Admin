@@ -34,6 +34,7 @@
         <title>Heatpress Design List - RCHQ</title>
         <meta name="robots" content="noindex,nofollow"/>
         <?php
+        $title= "Heatpress Design List";
             include_once("includes/inc-html-header.php");
         ?>
     </head>
@@ -41,10 +42,7 @@
         <?php include_once("includes/inc-header.php"); ?>
         <div class="container skip-nav">
             <h1 style="text-align:center;">Heatpress Design List</h1>
-            <a href="embroidery_add_design_entry.php" class="btn"><i class="fas fa-plus-circle"></i> Add New Heatpress Design</a> <select class="filters" style="padding:8px;border-radius: 4px;">
-            <option style="cursor: pointer;" value="all-designs" selected="selected">View All Designs</option>
-            <option style="cursor: pointer;" value="hide-discontinued">Hide Discontinued</option>
-            <option style="cursor: pointer;" value="show-in-progress">View In Progress Designs</select>
+            <a href="heatpress_add_design_entry.php" class="btn"><i class="fas fa-plus-circle"></i> Add New Heatpress Design</a>
             <hr/>
             <?php
                 $design_query = "SELECT * FROM `admin_heatpress_design_list` ORDER BY `customer_name` ASC;";
@@ -66,8 +64,7 @@
                     $design_id    = $design['_id'];
                     $in_progress  = $design['in_progress'];
                     ?>
-                    <tr class="design_rows <?php echo ($discontinued==1? "discontinued":"");
-                    echo ($in_progress==1? " in-progress":""); ?>">
+                    <tr class="design_rows">
                         <td><?php echo $design['_id']; ?></td>
                         <td><?php echo stripslashes($design['customer_name']); ?></td>
                         <td class="name_hover"><?php echo stripslashes($design['heatpress_design_name']); ?>

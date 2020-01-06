@@ -41,15 +41,24 @@
         while($line = mysqli_fetch_assoc($result)){
             //this makes account funds, cost center id's Purchase Order
             //check for employee payroll deduct - These do not need to be included in quickbooks from this upload. They are handled in billing logs later
-            if($line['client_id'] == 9 || $line['client_id'] == 20){
+            if(strpos($line['upload_name'],"Buster") !== false){
                 if(strpos($line["payment_method"],'cost_center_id') !== false){
                     continue;                
                 }
             }
+            if(strpos($line['upload_name'],"Kum") !== false){
+                if(strpos($line["payment_method"],'cost_center_id') !== false){
+                    continue;                
+                }
+                if(strpos($line["payment_method"],'purchase_order') !== false){
+                    continue;                
+                }
+            }
             //remove APU and MSA
-            if($line['client_id'] == 1 || $line['client_id'] == 23){
+            if(strpos($line['upload_name'],"MSA") !== false || strpos($line['upload_name'],"APU") !== false){
                 continue;
             }
+
             if($line['payment_method_title'] != "Purchase Order" && $line['payment_method_title'] != "Credit Card"){
                 $line['payment_method_title'] = "Purchase Order";
             }
@@ -62,6 +71,7 @@
                 $line['billing_company']     = str_replace(":","",str_replace(",","",substr($line['billing_company'],0,27).'...'));
                 $line['billing_company']     = str_replace(",","",$line['billing_company']);
                 $line['billing_company']     = str_replace("'","",$line['billing_company']);
+                $line['billing_city']        = str_replace(",","",$line['billing_city']);
                 $line['billing_address_1']   = str_replace(",","",$line['billing_address_1']);
                 $line['shipping_address_1']  = str_replace(",","",$line['shipping_address_1']);
                 $line['shipping_company']    = str_replace(",","",$line['shipping_company']);
@@ -88,9 +98,8 @@
 
                 $output .= implode(",",$line);
                 $output .= PHP_EOL_FIX;
-            }
+            }   
         }
-
         echo $output;
     }
      

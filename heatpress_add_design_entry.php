@@ -73,7 +73,6 @@
         $design_name     = mysqli_real_escape_string($conn, $_POST['design_name']);
         $client_name     = mysqli_real_escape_string($conn, $_POST['client_name']);
         $file_name       = mysqli_real_escape_string($conn, $_POST['file_name']);
-        $disk_number     = mysqli_real_escape_string($conn, $_POST['disk_number']);
         $date            = mysqli_real_escape_string($conn, $_POST['date']);
 
         //Image handling
