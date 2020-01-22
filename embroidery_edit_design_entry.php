@@ -38,7 +38,7 @@
         $result = mysqli_query($conn, $select_query);
         $design = mysqli_fetch_assoc($result);
 
-        $design_name     = $design['embroidery_design_name'];
+        $design_name     = mysqli_real_escape_string($conn, $design['embroidery_design_name']);
         $client_name     = $design['customer_name'];
         $file_name       = $design['embroidery_file_name'];
         $stitch_count    = $design['stitch_count'];
@@ -54,7 +54,7 @@
     }
     ?>
     <html>
-        <head>
+        <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Edit Embroidery Design - RCHQ Admin</title>
         <meta name="robots" content="noindex,nofollow"/>
         <?php
@@ -62,7 +62,10 @@
         ?>
         </head>
         <body>
-        <?php include_once("includes/inc-header.php"); ?>
+                <?php 
+                    $title="Embroidery";    
+                    include_once("includes/inc-header.php"); 
+                ?>
         <div class="container skip-nav">
             <h1 style="padding-bottom: 20px;">Edit Embroidery Design</h1>
             <p>
@@ -105,11 +108,11 @@
                             <option <?php echo ($discontinued==1? "selected='selected'":""); ?>  name="Yes" value="1">Yes</option>
                         </select></li>
                         <li>Design Name: <input type="text" class="form-control" value="<?php echo str_replace("\\","",str_replace("\"","&quot;",$design_name)); ?>" name="embroidery_design_name"/></li>
-                        <li>Client Name: <input type="text" class="form-control" value="<?php echo $client_name; ?>" name="client_name"/></li>
+                        <li>Client Name: <input type="text" class="form-control" value="<?php echo $client_name; ?>" name="customer_name"/></li>
                         <li>File Name: <input type="text" class="form-control" value="<?php echo $file_name; ?>" name="file_name"/></li>
                         <li>Stitch Count: <input type="text" class="form-control" value="<?php echo $stitch_count; ?>" name="stitch_count"/></li>
                         <li>Disk #: <input type="text" class="form-control" value="<?php echo $disk_number; ?>" name="disk_number"/></li>
-                        <li>Date: <input type="date" class="form-control" value="<?php echo $date; ?>" name="date"/></li>
+                        <li>Date: <input type="date" class="form-control" value="<?php echo $date; ?>" name="design_date"/></li>
                         <li>Rep: <input type="text" class="form-control" value="<?php echo $sales_rep; ?>" name="sales_rep"/></li>
                         <li>Old File Name: <input type="text" class="form-control" value="<?php echo $old_file_name; ?>" name="old_file_name"/></li>
                         <li>Old File Number (Not Used): <input type="text" class="form-control" value="<?php echo $old_file_number; ?>" name="old_file_number"/></li>
@@ -181,7 +184,7 @@
                                     + "&column_to_update=" + column_to_update
                                     + "&data=" + data;
 
-                                $("#image_block > li > img").attr("src","");
+                                $("#image-block > li > img").attr("src","");
 
                                 console.log(urlData);
 
